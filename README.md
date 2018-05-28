@@ -1,2 +1,3 @@
-# gitTest
-a git test
+# 练习
+
+一些小练习
