@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+  <!-- s使用JSX -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
+
+  <script type="text/babel">
+    'use strict';
+
+    const { useState, useContext, useReducer, useEffect } = React;
+    const AppContext = React.createContext({});
+
+    function App() {
+
+      return (
+        <AppContext.Provider value={{
+          username: 'huaqing'
+        }}>
+          <div>
+            <Example />
+            <Button/>
+            <Reducer />
+            <Person />
+          </div>
+        </AppContext.Provider>
+      );
+    }
+
+    function Example() {
+      const [count, setCount] = useState(0);
+      const { username } = useContext(AppContext);
+
+      return (
+        <div>
+          <p>You clicked {count} times</p>
+          <button onClick={() => { setCount(count + 1) }}>{ username }Click me</button>
+        </div>
+      )
+    }
+
+    function Button() {
+      const [buttonText, setButtonText] = useState('Click me, please!');
+      const { username } = useContext(AppContext);
+
+      function handleClick() {
+        return setButtonText('Thanks, been clicked!');
+      }
+
+      return <button onClick={handleClick}>{buttonText} {username}</button>
+    }
+
+    const myReducer = (state, action) => {
+      switch(action.type) {
+        case('countUp'):
+          return {
+            ...state,
+            count: state.count + 1
+          }
+        default: 
+          return state;
+      }
+    }
+
+    function Reducer() {
+      const [state, dispatch] = useReducer(myReducer, { count: 0 });
+
+      return (
+        <div>
+          <button onClick={() => dispatch({type: 'countUp'})}>+1</button>
+          <p>Count: {state.count}</p>
+        </div>
+      )
+    }
+
+    const usePerson = (personId) => {
+      const [loading, setLoading] = useState(true);
+      const [person, setPerson] = useState({});
+      useEffect(() => {
+        setLoading(true);
+        setTimeout(() => {
+          setPerson({
+            name: 'huaqing',
+            height: 180,
+            age: 20 
+          });
+          setLoading(false);
+        }, 3000);
+      }, [personId])
+
+      return [loading, person];
+    }
+
+    function Person() {
+      const [loading, person] = usePerson(12);
+      if (loading) {
+        return <p>Loading...</p>
+      }
+
+      return (
+        <div>
+          <p>You are viewing: {person.name}</p>
+          <p>Height: {person.height}</p>
+          <p>Age: {person.age}</p>
+        </div>
+      )
+    }
+
+    const domContainer = document.querySelector('#app');
+    ReactDOM.render(<App />, domContainer);
+  </script>
+</body>
+</html>
