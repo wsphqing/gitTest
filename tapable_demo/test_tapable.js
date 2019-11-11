@@ -43,4 +43,4 @@ syncWaterfallHook.tap('1', (name, age) => {
   return '1';
 })
 
-syncWaterfallHook.tap('2', ())
+// syncWaterfallHook.tap('2', ())
